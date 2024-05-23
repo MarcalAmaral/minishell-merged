@@ -6,7 +6,7 @@
 /*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:02:51 by myokogaw          #+#    #+#             */
-/*   Updated: 2024/05/01 17:23:11 by myokogaw         ###   ########.fr       */
+/*   Updated: 2024/05/23 15:30:41 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ int	command_not_found(char *path, char **matrix)
 	{
 		ft_putstr_fd(matrix[0], STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
-		ft_free_matrix((void **) matrix);
-		return (127);
+		return (last_exit_status(127));
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }

@@ -12,14 +12,14 @@
 
 #include "minishell.h"
 
-static void	finish_heredoc(char **matrix, t_token *node, char *file, int *fds)
+static int	finish_heredoc(char **matrix, t_token *node, char *file, int *fds)
 {
 	its_in_heredoc(0);
 	ft_free_matrix((void **) matrix);
 	node->heredoc_file = file;
 	close(fds[0]);
 	close(fds[1]);
-	return ;
+	return (0);
 }
 
 static char	**reviewing_delimiter(char *delimiter)

@@ -6,7 +6,7 @@
 /*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 15:59:36 by myokogaw          #+#    #+#             */
-/*   Updated: 2024/05/20 19:47:08 by myokogaw         ###   ########.fr       */
+/*   Updated: 2024/05/23 17:28:05 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	verify_is_valid_varname(char *assignment)
 	return (EXIT_SUCCESS);
 }
 
-int	 count_and_check_curr_matrix(char **matrix, char *assignment)
+int	count_and_check_curr_matrix(char **matrix, char *assignment)
 {
 	char	*varname_end;
 	int		size;
@@ -88,7 +88,6 @@ int	export(char **matrix)
 	char	**envp;
 
 	envp = hook_environ(NULL, 0);
-	printf("quantity of elements on environ matrix: %d\n", ft_matrix_count(envp));
 	if (!(*(++matrix)))
 		return (show_variables(envp));
 	while (*matrix)
@@ -101,6 +100,5 @@ int	export(char **matrix)
 		matrix++;
 	}
 	hook_environ(envp, 0);
-	printf("quantity of elements on environ matrix: %d\n", ft_matrix_count(hook_environ(NULL, 0)));
 	return (EXIT_SUCCESS);
 }

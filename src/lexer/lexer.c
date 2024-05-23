@@ -77,6 +77,7 @@ t_dlist	**lexer(char *input)
 			input += write(fd, input, 1);
 	}
 	close(fd);
+	received_sigint_in_heredoc(0);
 	tokens = generate_tokens("/tmp/.input_minishell");
 	return (tokens);
 }

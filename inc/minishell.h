@@ -170,7 +170,6 @@ int		ft_open_fork(void);
 int		ft_is_redirect(enum e_type type);
 int		get_ret_process(int pid);
 int		last_exit_status(int exit_status);
-int		command_not_found(char *path, char **matrix);
 int		ft_count_tokens(t_dlist **exec_tokens);
 int		run_program(void);
 int		ft_matrix_count(char **matrix);
@@ -179,6 +178,7 @@ int		heredoc_file_counter(int filenum);
 int		its_in_heredoc(int it_is);
 int		after_prompt(int is_after);
 int		heredoc_file_counter(int filenum);
+int		received_sigint_in_heredoc(int status);
 size_t	matrix_len(char **mat);
 
 // dlist procedures
@@ -193,8 +193,8 @@ t_dlist	*ft_dlist_last_occur(t_dlist **tokens, enum e_type type);
 t_dlist	**ft_cpy_dlst(t_dlist *start_point);
 
 // Here document
-void	heredoc(t_token *heredoc_tok, char *delimiter);
 void	handling_heredoc(t_dlist **head, char **lexemes, int *index);
+void	heredoc(t_token *heredoc_tok, char *delimiter);
 int		open_fds_heredoc(char *file, int *fds);
 int		is_delimiter(char *delimiter, char *input);
 
@@ -245,6 +245,7 @@ int		check_pipes(t_dlist **tokens);
 
 // Handle error
 int		syntax_error(int type, t_dlist **tokens);
+int	command_not_found(char *path, char **matrix);
 
 // Parser
 void	parser(t_dlist **tokens);

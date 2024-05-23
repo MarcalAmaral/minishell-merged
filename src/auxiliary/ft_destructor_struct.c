@@ -6,7 +6,7 @@
 /*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 19:36:46 by myokogaw          #+#    #+#             */
-/*   Updated: 2024/05/17 09:42:25 by myokogaw         ###   ########.fr       */
+/*   Updated: 2024/05/23 16:45:40 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	ft_destructor_struct(t_dlist **struct_to_clean)
 	if (!*struct_to_clean)
 	{
 		free(struct_to_clean);
+		struct_to_clean = NULL;
 		return ;
 	}
 	temp = *struct_to_clean;
@@ -31,5 +32,6 @@ void	ft_destructor_struct(t_dlist **struct_to_clean)
 		free(temp1);
 	}
 	free(struct_to_clean);
+	struct_to_clean = NULL;
 	return ;
 }

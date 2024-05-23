@@ -6,7 +6,7 @@
 /*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 17:36:08 by myokogaw          #+#    #+#             */
-/*   Updated: 2024/05/20 17:49:39 by myokogaw         ###   ########.fr       */
+/*   Updated: 2024/05/23 17:25:47 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@ void	receive_sig_int_heredoc(int sig)
 {
 	ft_putstr_fd("\n", STDOUT_FILENO);
 	close(STDIN_FILENO);
+	received_sigint_in_heredoc(1);
 	last_exit_status(128 + sig);
 }
 
 void	handle_signal_heredoc(void)
 {
-	struct sigaction sigint_here;
+	struct sigaction	sigint_here;
 
 	sigemptyset(&sigint_here.sa_mask);
 	sigint_here.sa_handler = receive_sig_int_heredoc;
@@ -51,9 +52,9 @@ void	receive_sig_int(int sig)
 
 void	handle_signal(void)
 {
-	struct sigaction sigint_std;
-	struct sigaction sigquit_std;
-	
+	struct sigaction	sigint_std;
+	struct sigaction	sigquit_std;
+
 	sigemptyset(&sigint_std.sa_mask);
 	sigint_std.sa_handler = receive_sig_int;
 	sigint_std.sa_flags = 0;

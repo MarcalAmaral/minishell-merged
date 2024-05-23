@@ -6,7 +6,7 @@
 /*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:00:50 by parthur-          #+#    #+#             */
-/*   Updated: 2024/05/22 23:44:49 by myokogaw         ###   ########.fr       */
+/*   Updated: 2024/05/23 17:37:29 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,14 @@ void	exec_cmd(t_ast *raiz, t_pipex *p)
 
 	f_id = fork();
 	if (f_id == 0)
-	{	
+	{
 		if (raiz->index != 3)
 			dup2(p->fd_exec[1], 1);
 		if (raiz->index != 1)
 			dup2(p->fd_exec[0], 0);
-		close_fds(p- >pipe_fd[1]);
-		execve(raiz->path, raiz->cmd, hook_environ(NULL, 0));
+		close_fds(p->pipe_fd[1]);
+		if (execve(raiz->path, raiz->cmd, hook_environ(NULL, 0)) == -1)
+			exit(last_exit_status(-1));
 	}
 	if (raiz->index != 1)
 		close(p->fd_exec[0]);
@@ -111,6 +112,8 @@ void	ast_function(t_dlist **tokens)
 
 	tokens[0]->pipes = have_pipe(tokens[0]);
 	p = (t_pipex *)malloc(sizeof(t_pipex));
+	expansion(tokens);
+	quote_removal(tokens);
 	get_paths(p);
 	if (tokens[0]->pipes > 0)
 	{
@@ -120,13 +123,16 @@ void	ast_function(t_dlist **tokens)
 		tree_exec(raiz, p, STDOUT_FILENO);
 		wait(NULL);
 		closing_father(p, raiz);
-	}	
+	}
 	else
 	{
 		raiz = cria_no_cmd(tokens[0], p, 0, 0);
 		p->f_id = fork();
 		if (p->f_id == 0)
-			execve(raiz->path, raiz->cmd, hook_environ(NULL, 0));
+		{
+			if (execve(raiz->path, raiz->cmd, hook_environ(NULL, 0)) == -1)
+				exit(last_exit_status(-1));
+		}
 		waitpid(-1, NULL, 0);
 		closing_only_child(p, raiz, tokens[0]);
 		free(tokens);

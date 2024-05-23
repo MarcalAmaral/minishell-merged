@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmds_paths.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: parthur- <parthur-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:09:03 by parthur-          #+#    #+#             */
-/*   Updated: 2024/05/16 20:53:53 by parthur-         ###   ########.fr       */
+/*   Updated: 2024/05/23 01:03:43 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ char	**defining_commands(t_dlist *tokens, size_t mat_exec_len)
 		{
 			mat_exc[i] = ft_strdup(tokens->tok->lex);
 			i++;
-		}	
+		}
 		tokens = tokens->next;
 	}
 	return (mat_exc);

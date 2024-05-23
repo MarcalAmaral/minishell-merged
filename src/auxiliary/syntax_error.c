@@ -14,9 +14,8 @@
 
 int	syntax_error(int type, t_dlist **tokens)
 {
-	(void) tokens;
-	// if (tokens)
-		// ft_destructor_struct(tokens);
+	if (tokens)
+		ft_destructor_struct(tokens);
 	if (type == UNCLOSED_QUOTE)
 		ft_putstr_fd("Error\n Syntax error an unclosed quoted\n", 2);
 	else if (type == UNEXPECTED)

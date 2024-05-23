@@ -12,11 +12,11 @@
 
 #include "minishell.h"
 
-int its_in_heredoc(int it_is)
+int	its_in_heredoc(int it_is)
 {
-    static int heredoc;
+	static int	heredoc;
 
-    if (it_is != -1)
-        heredoc = it_is;
-    return (heredoc);
+	if (it_is != -1)
+		heredoc = it_is;
+	return (heredoc);
 }
