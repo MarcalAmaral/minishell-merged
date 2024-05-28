@@ -76,15 +76,23 @@ typedef struct s_dlist {
 	int				pipes;
 }	t_dlist;
 
+typedef struct s_r_fds
+{
+	int	r_fd_in;
+	int	r_fd_out;
+}	t_r_fds;
+
 typedef struct s_ast
 {
 	enum e_type		type;
-	struct s_ast	*esq;
-	struct s_ast	*dir;
-	char			*path;
-	char			**cmd;
-	int				index;
-	struct s_ast	*first;
+	struct s_ast		*esq;
+	struct s_ast		*dir;
+	char				*path;
+	char				**cmd;
+	int					index;
+	char				***files;
+	struct s_r_fds		r_fds;
+	struct s_ast		*first;
 }	t_ast;
 
 typedef struct s_cmds
@@ -277,14 +285,18 @@ void	format_and_print_export(char *variable);
 int		interrupt_program(char *input);
 
 // Exec
-char	**tokens_to_args(t_ast *leaf);
-char	*get_path(char *command, char **envp);
-char	**cria_mat_cmds(t_dlist *tokens);
-char	*cria_path(t_dlist *tokens, t_pipex *p);
-void	handle_pipe(t_ast *leaf);
-void	execution(t_ast **ast);
-void	get_paths(t_pipex *p);
-t_ast	*cria_no_cmd(t_dlist *tokens, t_pipex *p, int i, int t);
+char		**tokens_to_args(t_ast *leaf);
+char		*get_path(char *command, char **envp);
+char		**cria_mat_cmds(t_dlist *tokens);
+char		*cria_path(t_dlist *tokens, t_pipex *p);
+char		***have_redirect(t_dlist *tokens);
+int 		files_out_control(t_ast *raiz);
+int 		files_in_control(t_ast *raiz);
+void		handle_pipe(t_ast *leaf);
+void		execution(t_ast **ast);
+void		get_paths(t_pipex *p);
+t_ast		*cria_no_cmd(t_dlist *tokens, t_pipex *p, int i, int t);
+t_r_fds 	r_fds_control(t_ast *raiz, t_pipex *p);
 
 
 #  ifdef __cplusplus

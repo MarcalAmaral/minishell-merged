@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:00:50 by parthur-          #+#    #+#             */
-/*   Updated: 2024/05/23 17:37:29 by myokogaw         ###   ########.fr       */
+/*   Updated: 2024/05/28 14:49:03 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ t_ast	*cria_arvore(t_dlist **t, t_pipex *p)
 		{
 			esq = cria_no_arv(aux, p, i, t[0]->pipes);
 			aux = free_chunk_list(t[0]);
+			//printf("teste, %s raiz index = %d\n", esq->dir->files[1][0], esq->dir->index);
 			raiz = adiciona_no(raiz, esq);
 		}
 		else
@@ -48,9 +49,10 @@ void	exec_cmd(t_ast *raiz, t_pipex *p)
 	f_id = fork();
 	if (f_id == 0)
 	{
-		if (raiz->index != 3)
+		raiz->r_fds = r_fds_control(raiz, p);
+		if (raiz->index != 3 || raiz->r_fds.r_fd_out != 0)
 			dup2(p->fd_exec[1], 1);
-		if (raiz->index != 1)
+		if (raiz->index != 1 || raiz->r_fds.r_fd_in != 0)
 			dup2(p->fd_exec[0], 0);
 		close_fds(p->pipe_fd[1]);
 		if (execve(raiz->path, raiz->cmd, hook_environ(NULL, 0)) == -1)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmds_paths.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:09:03 by parthur-          #+#    #+#             */
-/*   Updated: 2024/05/23 01:03:43 by myokogaw         ###   ########.fr       */
+/*   Updated: 2024/05/28 14:15:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,9 @@ t_ast	*cria_no_cmd(t_dlist *tokens, t_pipex *p, int i, int t)
 	no_cmd->dir = NULL;
 	no_cmd->path = cria_path(tokens, p);
 	no_cmd->cmd = cria_mat_cmds(tokens);
+	no_cmd->files = have_redirect(tokens);
+	no_cmd->r_fds.r_fd_in = 0;
+	no_cmd->r_fds.r_fd_out = 0;
 	if (i == t)
 		no_cmd->index = 3;
 	else if (i == 0)
