@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmds_paths.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:09:03 by parthur-          #+#    #+#             */
-/*   Updated: 2024/05/28 14:15:55 by marvin           ###   ########.fr       */
+/*   Updated: 2024/05/31 09:34:34 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	get_paths(t_pipex *p)
 	}
 }
 
+// Revisar para implementar o recebimento do comando com um path;
 char	*cria_path(t_dlist *tokens, t_pipex *p)
 {
 	t_dlist	*aux_t;

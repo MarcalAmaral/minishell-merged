@@ -13,10 +13,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# ifdef __cplusplusbash
-	extern "C" {
-# endif
-
 # include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -45,28 +41,29 @@
 # define UNEXPECTED 6
 
 // Define errors for cd command;
-#define TOOMANY 3
-#define NOTSETHOME 2
-#define ERRNO 1
+# define TOOMANY 3
+# define NOTSETHOME 2
+# define ERRNO 1
 
-enum	e_type
+enum e_type
 {
-	DGREAT = 1,
-	DLESS,
+	H_DOC = 1,
+	APPEND,
 	PIPE,
 	R_OUT,
 	R_IN,
 	WORD,
 	ASSIGNMENT_WORD,
 	CMD,
-	IO_FILE
+	IO_FILE,
+	H_DEL
 };
 
 typedef struct s_token {
 	enum e_type		type;
 	char			*lex;
 	char			*heredoc_file;
-	int				metadata[3];
+	int				metadata[4];
 }	t_token;
 
 typedef struct s_dlist {
@@ -85,14 +82,14 @@ typedef struct s_r_fds
 typedef struct s_ast
 {
 	enum e_type		type;
-	struct s_ast		*esq;
-	struct s_ast		*dir;
-	char				*path;
-	char				**cmd;
-	int					index;
-	char				***files;
-	struct s_r_fds		r_fds;
-	struct s_ast		*first;
+	struct s_ast	*esq;
+	struct s_ast	*dir;
+	char			*path;
+	char			**cmd;
+	int				index;
+	char			***files;
+	struct s_r_fds	r_fds;
+	struct s_ast	*first;
 }	t_ast;
 
 typedef struct s_cmds
@@ -129,9 +126,6 @@ typedef struct s_pipex
 	t_paths		paths;
 	t_fd_files	fd_files;
 	enum e_type	id_t;
-	char		**argv;
-	int			argc;
-	char		**envp;
 	int			pipe_fd[2];
 	int			fork_id;
 	int			c;
@@ -188,6 +182,7 @@ int		after_prompt(int is_after);
 int		heredoc_file_counter(int filenum);
 int		received_sigint_in_heredoc(int status);
 size_t	matrix_len(char **mat);
+t_dlist	*go_to_pipe_or_first(t_dlist *aux_t);
 
 // dlist procedures
 int		ft_dlist_have_type(t_dlist **tokens, enum e_type type);
@@ -253,7 +248,7 @@ int		check_pipes(t_dlist **tokens);
 
 // Handle error
 int		syntax_error(int type, t_dlist **tokens);
-int	command_not_found(char *path, char **matrix);
+int		command_not_found(char *path, char **matrix);
 
 // Parser
 void	parser(t_dlist **tokens);
@@ -262,8 +257,14 @@ int		parser_validation(t_dlist **tokens);
 // AST procedures
 void	ast_function(t_dlist **tokens);
 void	exec_cmd(t_ast *raiz, t_pipex *p);
+void	tree_exec(t_ast *raiz, t_pipex *p, int fd);
 void	standard_command_organizer(t_ast *raiz, t_pipex *p);
 void	first_command_organizer(t_ast *raiz, t_pipex *p);
+void	closing_father(t_pipex *p, t_ast *raiz);
+void	closing_only_child(t_pipex *p, t_ast *raiz, t_dlist *tokens);
+void	only_child_functions(t_dlist **tokens, t_pipex *p);
+void	brothers_functions(t_dlist **tokens, t_pipex *p);
+t_ast	*cria_arvore(t_dlist **t, t_pipex *p);
 t_ast	*adiciona_no(t_ast *raiz, t_ast *no);
 t_ast	*cria_no_arv(t_dlist *tokens, t_pipex *p, int i, int t);
 t_dlist	*free_chunk_list(t_dlist *tokens);
@@ -285,22 +286,19 @@ void	format_and_print_export(char *variable);
 int		interrupt_program(char *input);
 
 // Exec
-char		**tokens_to_args(t_ast *leaf);
-char		*get_path(char *command, char **envp);
-char		**cria_mat_cmds(t_dlist *tokens);
-char		*cria_path(t_dlist *tokens, t_pipex *p);
-char		***have_redirect(t_dlist *tokens);
-int 		files_out_control(t_ast *raiz);
-int 		files_in_control(t_ast *raiz);
-void		handle_pipe(t_ast *leaf);
-void		execution(t_ast **ast);
-void		get_paths(t_pipex *p);
-t_ast		*cria_no_cmd(t_dlist *tokens, t_pipex *p, int i, int t);
-t_r_fds 	r_fds_control(t_ast *raiz, t_pipex *p);
+char	**tokens_to_args(t_ast *leaf);
+char	*get_path(char *command, char **envp);
+char	**cria_mat_cmds(t_dlist *tokens);
+char	*cria_path(t_dlist *tokens, t_pipex *p);
+char	***have_redirect(t_dlist *tokens);
+char	**have_append(t_dlist *tokens);
+char	**creat_append_mat(t_dlist *aux_t, int size_append);
+int		files_out_control(t_ast *raiz);
+int		files_in_control(t_ast *raiz);
+void	handle_pipe(t_ast *leaf);
+void	execution(t_ast **ast);
+void	get_paths(t_pipex *p);
+t_ast	*cria_no_cmd(t_dlist *tokens, t_pipex *p, int i, int t);
+t_r_fds	r_fds_control(t_ast *raiz, t_pipex *p);
 
-
-#  ifdef __cplusplus
-	} // extern "C"
-#  endif
-
-# endif
+#endif

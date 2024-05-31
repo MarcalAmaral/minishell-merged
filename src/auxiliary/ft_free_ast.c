@@ -27,13 +27,21 @@ void	closing_process(t_pipex *p, t_ast *raiz)
 	ft_free_ast(raiz->first);
 	hook_environ(NULL, 1);
 	hook_pwd(NULL, 1);
-	exit(0);
+	exit(last_exit_status(-1));
 }
 
 void	free_right(t_ast *right)
 {
 	ft_free_matrix_char(right->cmd);
 	free(right->path);
+	if (right->files[0])
+		ft_free_matrix_char(right->files[0]);
+	if (right->files[1])
+		ft_free_matrix_char(right->files[1]);
+	if (right->files[2])
+		ft_free_matrix_char(right->files[2]);
+	free(right->files);
+	right->files = NULL;
 	right->cmd = NULL;
 	right->path = NULL;
 }

@@ -45,7 +45,7 @@ static int	ft_isop(t_dlist **head, char **lexemes, int *i)
 	if (!ft_strncmp(lexemes[*i], "<<", 2))
 		handling_heredoc(head, lexemes, i);
 	else if (!ft_strncmp(lexemes[*i], ">>", 2))
-		ft_append_dlist(head, ft_newnode_dlist(lexemes[*i], DLESS, data));
+		ft_append_dlist(head, ft_newnode_dlist(lexemes[*i], APPEND, data));
 	else if (!ft_strncmp(lexemes[*i], "|", 1))
 		handling_pipe(head, lexemes, i);
 	else if (!ft_strncmp(lexemes[*i], ">", 1))
@@ -56,7 +56,8 @@ static int	ft_isop(t_dlist **head, char **lexemes, int *i)
 		return (FALSE);
 	if (start == *i && ft_strncmp(lexemes[*i], "|", 1))
 	{
-		if (lexemes[++(*i)])
+		has_expansion(lexemes[++(*i)], &data[0], &data[2]);
+		if (lexemes[*i])
 			ft_append_dlist(head, ft_newnode_dlist(lexemes[*i], IO_FILE, data));
 	}
 	return (TRUE);

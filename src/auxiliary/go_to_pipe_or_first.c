@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_is_redirect.c                                   :+:      :+:    :+:   */
+/*   go_to_pipe_or_first.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: parthur- <parthur-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/25 15:32:57 by myokogaw          #+#    #+#             */
-/*   Updated: 2024/05/28 19:45:17 by parthur-         ###   ########.fr       */
+/*   Created: 2024/05/29 23:19:47 by parthur-          #+#    #+#             */
+/*   Updated: 2024/05/29 23:30:31 by parthur-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_is_redirect(enum e_type type)
+t_dlist	*go_to_pipe_or_first(t_dlist *aux_t)
 {
-	if (type == R_OUT || type == R_IN || type == H_DOC || type == APPEND)
-		return (1);
-	return (0);
+	while (aux_t->next != NULL)
+			aux_t = aux_t->next;
+	while (aux_t->tok->type != PIPE && aux_t->prev != NULL)
+		aux_t = aux_t->prev;
+	return (aux_t);
 }

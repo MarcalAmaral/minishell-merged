@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:00:50 by parthur-          #+#    #+#             */
-/*   Updated: 2024/05/28 14:49:03 by marvin           ###   ########.fr       */
+/*   Updated: 2024/05/31 09:42:19 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ t_ast	*cria_arvore(t_dlist **t, t_pipex *p)
 		{
 			esq = cria_no_arv(aux, p, i, t[0]->pipes);
 			aux = free_chunk_list(t[0]);
-			//printf("teste, %s raiz index = %d\n", esq->dir->files[1][0], esq->dir->index);
 			raiz = adiciona_no(raiz, esq);
 		}
 		else
@@ -42,25 +41,35 @@ t_ast	*cria_arvore(t_dlist **t, t_pipex *p)
 	return (raiz);
 }
 
-void	exec_cmd(t_ast *raiz, t_pipex *p)
+void	exec_cmd(t_ast *root, t_pipex *p)
 {
 	int		f_id;
+	int		exit_status;
 
-	f_id = fork();
-	if (f_id == 0)
+	exit_status = command_not_found(root->path, root->cmd);
+	if (!exit_status)
 	{
-		raiz->r_fds = r_fds_control(raiz, p);
-		if (raiz->index != 3 || raiz->r_fds.r_fd_out != 0)
-			dup2(p->fd_exec[1], 1);
-		if (raiz->index != 1 || raiz->r_fds.r_fd_in != 0)
-			dup2(p->fd_exec[0], 0);
-		close_fds(p->pipe_fd[1]);
-		if (execve(raiz->path, raiz->cmd, hook_environ(NULL, 0)) == -1)
-			exit(last_exit_status(-1));
+		f_id = fork();
+		if (f_id == 0)
+		{
+			root->r_fds = r_fds_control(root, p);
+			if (root->index != 3 || root->r_fds.r_fd_out != 0)
+				dup2(p->fd_exec[1], 1);
+			if (root->index != 1 || root->r_fds.r_fd_in != 0)
+				dup2(p->fd_exec[0], 0);
+			close_fds(1024);
+			if (execve(root->path, root->cmd, hook_environ(NULL, 0)) == -1)
+			{
+				hook_environ(NULL, 1);
+				hook_pwd(NULL, 1);
+				ft_free_ast(root);
+				exit(last_exit_status(-1));
+			}
+		}
 	}
-	if (raiz->index != 1)
+	if (root->index != 1)
 		close(p->fd_exec[0]);
-	if (raiz->index != 3)
+	if (root->index != 3)
 		close(p->fd_exec[1]);
 }
 
@@ -92,24 +101,8 @@ void	tree_exec(t_ast *raiz, t_pipex *p, int fd)
 	standard_command_organizer(raiz, p);
 }
 
-void	closing_father(t_pipex *p, t_ast *raiz)
-{
-	ft_free_ast(raiz);
-	ft_free_matrix_char(p->paths.mat_path);
-	free(p);
-}
-
-void	closing_only_child(t_pipex *p, t_ast *raiz, t_dlist *tokens)
-{
-	ft_free_matrix_char(p->paths.mat_path);
-	free(p);
-	ft_free_ast(raiz);
-	free_chunk_list(tokens);
-}
-
 void	ast_function(t_dlist **tokens)
 {
-	t_ast	*raiz;
 	t_pipex	*p;
 
 	tokens[0]->pipes = have_pipe(tokens[0]);
@@ -118,25 +111,7 @@ void	ast_function(t_dlist **tokens)
 	quote_removal(tokens);
 	get_paths(p);
 	if (tokens[0]->pipes > 0)
-	{
-		raiz = cria_arvore(tokens, p);
-		free(tokens);
-		raiz->first = raiz;
-		tree_exec(raiz, p, STDOUT_FILENO);
-		wait(NULL);
-		closing_father(p, raiz);
-	}
+		brothers_functions(tokens, p);
 	else
-	{
-		raiz = cria_no_cmd(tokens[0], p, 0, 0);
-		p->f_id = fork();
-		if (p->f_id == 0)
-		{
-			if (execve(raiz->path, raiz->cmd, hook_environ(NULL, 0)) == -1)
-				exit(last_exit_status(-1));
-		}
-		waitpid(-1, NULL, 0);
-		closing_only_child(p, raiz, tokens[0]);
-		free(tokens);
-	}
+		only_child_functions(tokens, p);
 }

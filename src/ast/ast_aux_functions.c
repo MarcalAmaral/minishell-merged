@@ -3,31 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   ast_aux_functions.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: parthur- <parthur-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 23:24:33 by parthur-          #+#    #+#             */
-/*   Updated: 2024/05/17 01:49:27 by parthur-         ###   ########.fr       */
+/*   Updated: 2024/05/31 09:45:36 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	first_command_organizer(t_ast *raiz, t_pipex *p)
+void	closing_father(t_pipex *p, t_ast *raiz)
 {
-	p->fd_exec[1] = p->pipe_fd[1];
-	p->fd_exec[0] = 0;
-	exec_cmd(raiz->esq, p);
-	closing_process(p, raiz);
+	ft_free_ast(raiz);
+	ft_free_matrix_char(p->paths.mat_path);
+	rl_clear_history();
+	free(p);
 }
 
-void	standard_command_organizer(t_ast *raiz, t_pipex *p)
+void	closing_only_child(t_pipex *p, t_ast *raiz, t_dlist *tokens)
 {
-	if (raiz->dir->index != 3)
-		p->fd_exec[1] = p->exit_fd;
-	p->fd_exec[0] = p->input_fd;
-	exec_cmd(raiz->dir, p);
-	if (raiz->dir->index == 3)
-		close(p->pipe_fd[1]);
+	ft_free_matrix_char(p->paths.mat_path);
+	free(p);
+	ft_free_ast(raiz);
+	free_chunk_list(tokens);
 }
 
 t_dlist	*free_chunk_list(t_dlist *tokens)
