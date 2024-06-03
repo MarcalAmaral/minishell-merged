@@ -109,39 +109,39 @@ void	send_for_expansion(t_dlist *node)
 	return ;
 }
 
-int		redir_validation_expansion(enum e_type prev_type, t_dlist *tok, t_dlist *tok_next)
-{
-	if (prev_type == IO_FILE)
-	{
-		if (tok != tok_next)
-			tok->tok->metadata[3] = 1;
-	}
-}
+// int		redir_validation_expansion(enum e_type prev_type, t_dlist *tok, t_dlist *tok_next)
+// {
+// 	if (prev_type == IO_FILE)
+// 	{
+// 		if (tok != tok_next)
+// 			tok->tok->metadata[3] = 1;
+// 	}
+// }
 
 void	expansion(t_dlist **tokens)
 {
 	t_dlist		*tok;
-	t_dlist		*next_tok;
-	enum e_type	prev_type;
+	// t_dlist		*next_tok;
+	// enum e_type	prev_type;
 
 	tok = *tokens;
-	if (tok->next)
-		next_tok = tok->next;
+	// if (tok->next)
+	// 	next_tok = tok->next;
 	while (tok)
 	{
 		if (tok->tok->type == ASSIGNMENT_WORD || tok->tok->type == IO_FILE)
 		{
-			prev_type = tok->tok->type;
+			// prev_type = tok->tok->type;
 			send_for_expansion(tok);
-			redit_validation_expansion(prev_type, tok->next, next_tok);
+			// redit_validation_expansion(prev_type, tok->next, next_tok);
 		}
 		else if (tok->next == NULL)
 			break ;
 		else
 		{
 			tok = tok->next;
-			if (tok->next)
-				next_tok = tok->next;
+			// if (tok->next)
+			// 	next_tok = tok->next;
 		}
 	}
 	return ;
