@@ -6,7 +6,7 @@
 /*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 15:58:57 by myokogaw          #+#    #+#             */
-/*   Updated: 2024/05/05 20:17:19 by myokogaw         ###   ########.fr       */
+/*   Updated: 2024/06/04 15:32:07 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	try_except_change_dir(char *curpath)
 {
 	char	*home;
 
-	home = ft_getenv("$HOME");
+	home = ft_getenv("HOME");
 	if (curpath == NULL && home == NULL)
 		return (error_msg_cd(NOTSETHOME, home));
 	else if (curpath == NULL && home)

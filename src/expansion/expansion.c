@@ -109,39 +109,48 @@ void	send_for_expansion(t_dlist *node)
 	return ;
 }
 
-// int		redir_validation_expansion(enum e_type prev_type, t_dlist *tok, t_dlist *tok_next)
-// {
-// 	if (prev_type == IO_FILE)
-// 	{
-// 		if (tok != tok_next)
-// 			tok->tok->metadata[3] = 1;
-// 	}
-// }
+void	check_ambiguous_redirect(t_dlist *tok, t_dlist *next_tok)
+{
+	if (!*tok->tok->lex)
+	{
+		tok->tok->metadata[3] = 1;
+		tok->tok->metadata[0] = -1;
+		return ;
+	}
+	if (tok->next != next_tok)
+	{
+		tok->tok->metadata[3] = 1;
+		tok->tok->metadata[0] = -1;
+		return ;
+	}
+	return ;
+}
 
 void	expansion(t_dlist **tokens)
 {
 	t_dlist		*tok;
-	// t_dlist		*next_tok;
-	// enum e_type	prev_type;
+	t_dlist		*next_tok;
 
 	tok = *tokens;
-	// if (tok->next)
-	// 	next_tok = tok->next;
+	if (tok->next)
+		next_tok = tok->next;
 	while (tok)
 	{
-		if (tok->tok->type == ASSIGNMENT_WORD || tok->tok->type == IO_FILE)
+		if ((tok->tok->type == ASSIGNMENT_WORD || tok->tok->type == IO_FILE)
+			&& tok->tok->metadata[0] > -1)
 		{
-			// prev_type = tok->tok->type;
 			send_for_expansion(tok);
-			// redit_validation_expansion(prev_type, tok->next, next_tok);
+			if (tok->tok->type == IO_FILE)
+				check_ambiguous_redirect(tok, next_tok);
 		}
 		else if (tok->next == NULL)
 			break ;
 		else
 		{
 			tok = tok->next;
-			// if (tok->next)
-			// 	next_tok = tok->next;
+			next->tok = NULL;
+			if (tok->next)
+				next_tok = tok->next;
 		}
 	}
 	return ;

@@ -126,6 +126,9 @@ typedef struct s_pipex
 	t_paths		paths;
 	t_fd_files	fd_files;
 	enum e_type	id_t;
+	char		**argv;
+	int			argc;
+	char		**envp;
 	int			pipe_fd[2];
 	int			fork_id;
 	int			c;
@@ -152,6 +155,7 @@ char	*set_entrance(void);
 char	*ft_getenv(char *var);
 char	*validating_varname(char *varname, int *is_quoted);
 char	*ft_getenv(char *varname);
+char	*is_an_address(char *lex);
 void	closing_process(t_pipex *p, t_ast *raiz);
 void	free_tokens(t_dlist *tokens);
 void	free_struct_token(t_token *tok);
@@ -164,6 +168,7 @@ void	ft_close_fds(void);
 void	close_fds(int fd_max);
 void	skip_single_quotes(char *lexeme, int *position);
 void	handling_pipe(t_dlist **head, char **lexemes, int *index);
+void	execve_error_exit(t_ast *root);
 int		ft_open_fd(char *path, int flags);
 int		ft_have_char(char *str, char c);
 int		ft_have_op(char *input);
@@ -183,6 +188,7 @@ int		heredoc_file_counter(int filenum);
 int		received_sigint_in_heredoc(int status);
 size_t	matrix_len(char **mat);
 t_dlist	*go_to_pipe_or_first(t_dlist *aux_t);
+t_dlist	*go_to_first_word(t_dlist *tokens);
 
 // dlist procedures
 int		ft_dlist_have_type(t_dlist **tokens, enum e_type type);
@@ -261,7 +267,7 @@ void	tree_exec(t_ast *raiz, t_pipex *p, int fd);
 void	standard_command_organizer(t_ast *raiz, t_pipex *p);
 void	first_command_organizer(t_ast *raiz, t_pipex *p);
 void	closing_father(t_pipex *p, t_ast *raiz);
-void	closing_only_child(t_pipex *p, t_ast *raiz, t_dlist *tokens);
+void	closing_only_child(t_pipex *p, t_ast *raiz, t_dlist **tokens, int *fd);
 void	only_child_functions(t_dlist **tokens, t_pipex *p);
 void	brothers_functions(t_dlist **tokens, t_pipex *p);
 t_ast	*cria_arvore(t_dlist **t, t_pipex *p);
@@ -286,19 +292,24 @@ void	format_and_print_export(char *variable);
 int		interrupt_program(char *input);
 
 // Exec
-char	**tokens_to_args(t_ast *leaf);
-char	*get_path(char *command, char **envp);
-char	**cria_mat_cmds(t_dlist *tokens);
-char	*cria_path(t_dlist *tokens, t_pipex *p);
 char	***have_redirect(t_dlist *tokens);
 char	**have_append(t_dlist *tokens);
 char	**creat_append_mat(t_dlist *aux_t, int size_append);
-int		files_out_control(t_ast *raiz);
-int		files_in_control(t_ast *raiz);
+char	**cria_mat_cmds(t_dlist *tokens);
+char	**tokens_to_args(t_ast *leaf);
+char	*get_path(char *command, char **envp);
+char	*cria_path(t_dlist *tokens, t_pipex *p);
+char	*its_a_address(char *lex);
+int		files_out_control(t_ast *raiz, t_pipex *p);
+int		files_in_control(t_ast *raiz, t_pipex *p);
 void	handle_pipe(t_ast *leaf);
 void	execution(t_ast **ast);
 void	get_paths(t_pipex *p);
 t_ast	*cria_no_cmd(t_dlist *tokens, t_pipex *p, int i, int t);
 t_r_fds	r_fds_control(t_ast *raiz, t_pipex *p);
+
+// Exec errors
+void	redirect_in_error(t_ast *raiz, t_pipex *p);
+void	redirect_out_error(t_ast *raiz, t_pipex *p);
 
 #endif

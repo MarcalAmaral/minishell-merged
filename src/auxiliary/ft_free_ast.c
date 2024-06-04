@@ -27,7 +27,7 @@ void	closing_process(t_pipex *p, t_ast *raiz)
 	ft_free_ast(raiz->first);
 	hook_environ(NULL, 1);
 	hook_pwd(NULL, 1);
-	exit(last_exit_status(-1));
+	exit(0);
 }
 
 void	free_right(t_ast *right)

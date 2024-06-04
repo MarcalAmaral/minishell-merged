@@ -6,7 +6,7 @@
 /*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 14:33:59 by myokogaw          #+#    #+#             */
-/*   Updated: 2024/05/16 11:19:15 by myokogaw         ###   ########.fr       */
+/*   Updated: 2024/06/04 16:06:34 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,10 @@ static void	get_new_token(t_dlist *token, char *path)
 	fd = ft_open_fd(path, OPEN_RD);
 	new_lexeme = get_next_line(fd);
 	free(token->tok->lex);
-	token->tok->lex = new_lexeme;
+	if (!new_lexeme)
+		token->tok->lex = ft_strdup("");
+	else
+		token->tok->lex = new_lexeme;
 	close (fd);
 	unlink(path);
 	return ;

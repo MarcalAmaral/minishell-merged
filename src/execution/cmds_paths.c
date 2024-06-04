@@ -6,7 +6,7 @@
 /*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:09:03 by parthur-          #+#    #+#             */
-/*   Updated: 2024/05/31 19:53:33 by myokogaw         ###   ########.fr       */
+/*   Updated: 2024/06/04 16:03:01 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,40 +36,26 @@ void	get_paths(t_pipex *p)
 	}
 }
 
-char	*getting_path(const char *lex, char **paths)
-{
-	char	*temp;
-
-	if (!lex || !paths)
-		return (NULL);
-	if (ft_strchr(lex, '/'))
-		return (ft_strdup(lex));
-	while (*paths != NULL)
-	{
-		temp = ft_strjoin(*paths, lex);
-		if (access(temp, F_OK | X_OK) == 0)
-			return (temp);
-		free(temp);
-		paths++;
-	}
-	return (NULL);
-}
-
-// Revisar para implementar o recebimento do comando com um path;
 char	*cria_path(t_dlist *tokens, t_pipex *p)
 {
-	t_dlist	*aux;
+	t_dlist	*aux_t;
+	int		i;
+	char	*path;
 
-	aux = tokens;
-	while (aux->next != NULL)
-		aux = aux->next;
-	while (aux->tok->type != PIPE && aux->prev != NULL)
-		aux = aux->prev;
-	while (aux->tok->type != WORD)
-		aux = aux->next;
-	while (!*aux->tok->lex && aux->next != NULL)
-		aux = aux->next;
-	return (getting_path(aux->tok->lex, p->paths.mat_path));
+	aux_t = tokens;
+	i = 0;
+	aux_t = go_to_pipe_or_first(aux_t);
+	aux_t = go_to_first_word(aux_t);
+	if (ft_strchr(aux_t->tok->lex, '/'))
+		return (ft_strdup(aux_t->tok->lex));
+	while (p->paths.mat_path[i] != NULL && aux_t->tok->type == WORD)
+	{
+		path = ft_strjoin(p->paths.mat_path[i++], aux_t->tok->lex);
+		if (access(path, X_OK) == 0)
+			return (path);
+		free(path);
+	}
+	return (NULL);
 }
 
 char	**defining_commands(t_dlist *tokens, size_t mat_exec_len)

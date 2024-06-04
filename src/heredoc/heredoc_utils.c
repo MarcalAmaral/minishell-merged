@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: parthur- <parthur-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 11:40:19 by myokogaw          #+#    #+#             */
-/*   Updated: 2024/05/29 18:35:30 by parthur-         ###   ########.fr       */
+/*   Updated: 2024/06/04 14:44:18 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	handling_heredoc(t_dlist **head, char **lexemes, int *i)
 {
 	t_dlist	*node;
-	int		metadata[3];
+	int		metadata[4];
 
 	ft_memset(metadata, 0, sizeof(metadata));
 	node = ft_newnode_dlist(lexemes[*i], H_DOC, metadata);

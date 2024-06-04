@@ -6,7 +6,7 @@
 /*   By: myokogaw <myokogaw@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 23:24:33 by parthur-          #+#    #+#             */
-/*   Updated: 2024/05/31 09:45:36 by myokogaw         ###   ########.fr       */
+/*   Updated: 2024/06/04 15:18:11 by myokogaw         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,20 @@ void	closing_father(t_pipex *p, t_ast *raiz)
 {
 	ft_free_ast(raiz);
 	ft_free_matrix_char(p->paths.mat_path);
-	rl_clear_history();
 	free(p);
 }
 
-void	closing_only_child(t_pipex *p, t_ast *raiz, t_dlist *tokens)
+void	closing_only_child(t_pipex *p, t_ast *raiz, t_dlist **tokens, int *fd)
 {
+	dup2(fd[0], STDIN_FILENO);
+	dup2(fd[1], STDOUT_FILENO);
+	close(fd[0]);
+	close(fd[1]);
 	ft_free_matrix_char(p->paths.mat_path);
 	free(p);
 	ft_free_ast(raiz);
-	free_chunk_list(tokens);
+	free_chunk_list(*tokens);
+	free(tokens);
 }
 
 t_dlist	*free_chunk_list(t_dlist *tokens)
